@@ -1,0 +1,11 @@
+#*****application configuration***
+server.port=8181
+server.servlet.context-path=/prodos_resource_srvr
+
+# *******DB Config*******
+spring.jpa.show-sql=true
+
+# *******Logging*******
+logging.level.root=INFO
+logging.level.org.springframework.security: INFO
+

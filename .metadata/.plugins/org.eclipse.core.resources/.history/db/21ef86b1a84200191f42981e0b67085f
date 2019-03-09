@@ -1,0 +1,40 @@
+package com.dineshonjava.prodos.security;
+
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.util.ObjectUtils;
+
+public class OAuth2AuthenticationProvider implements AuthenticationProvider {
+
+	private ResourceServerProperties resourceServerProperties;
+
+	public OAuth2AuthenticationProvider(ResourceServerProperties resourceServerProperties) {
+		this.resourceServerProperties = resourceServerProperties;
+	}
+
+	@Override
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+		OAuth2AuthenticationToken auth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+		String accessToken = auth2AuthenticationToken.getToken();
+
+		OAuth2UserInfoTokenServices oAuth2UserInfoTokenServices = new OAuth2UserInfoTokenServices(
+				resourceServerProperties.getUserInfoUri(), resourceServerProperties.getClientId());
+		
+		OAuth2Authentication oAuth2Authentication = oAuth2UserInfoTokenServices.loadAuthentication(accessToken);
+		
+		if (ObjectUtils.isEmpty(oAuth2Authentication)) {
+			return null;
+		}
+		oAuth2Authentication.setAuthenticated(true);
+		return oAuth2Authentication;
+	}
+
+	@Override
+	public boolean supports(Class<?> authentication) {
+		return OAuth2AuthenticationToken.class.isAssignableFrom(authentication);
+	}
+}

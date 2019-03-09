@@ -1,0 +1,49 @@
+package com.magicbricks.service.impl;
+
+import java.util.Map;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.magicbricks.bean.User;
+import com.magicbricks.service.UserLoginService;
+
+@Service
+public class UserLoginServiceImpl implements UserLoginService {
+	
+	/*public User getAuthenticatedUserRecord(){
+		OAuth2Authentication auth = (OAuth2Authentication)SecurityContextHolder.getContext().getAuthentication(); 
+		Map userDetails = (Map)((Map)auth.getUserAuthentication().getDetails()).get("principal");
+		userDetails.remove("enabled");
+		userDetails.remove("credentialsNonExpired");
+		userDetails.remove("accountNonLocked");
+		userDetails.remove("accountNonExpired");
+		userDetails.remove("authorities");
+		
+		ObjectMapper oMapper = new ObjectMapper();
+		return oMapper.convertValue(userDetails, User.class);
+	}*/
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public User getAuthenticatedUserRecord(){
+		if(SecurityContextHolder.getContext().getAuthentication() instanceof OAuth2Authentication){
+			OAuth2Authentication auth = (OAuth2Authentication)SecurityContextHolder.getContext().getAuthentication(); 
+			Map userPrincipalsDetails = (Map)((Map)auth.getUserAuthentication().getDetails()).get("principal");
+			Map userDetails=(Map)((Map)auth.getUserAuthentication().getDetails()).get("details");
+			userPrincipalsDetails.remove("enabled");
+			userPrincipalsDetails.remove("credentialsNonExpired");
+			userPrincipalsDetails.remove("accountNonLocked");
+			userPrincipalsDetails.remove("accountNonExpired");
+			userPrincipalsDetails.remove("authorities");
+			if(userDetails!=null && userDetails.get("tokenValue")!=null) {
+				userPrincipalsDetails.put("accessToken",userDetails.get("tokenValue"));
+			}
+			
+			ObjectMapper oMapper = new ObjectMapper();
+			return oMapper.convertValue(userPrincipalsDetails, User.class);
+		}
+		return null;
+	}
+}

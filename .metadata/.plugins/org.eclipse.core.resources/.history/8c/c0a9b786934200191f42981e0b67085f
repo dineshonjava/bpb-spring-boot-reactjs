@@ -1,0 +1,51 @@
+package com.magicbricks.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+
+import com.magicbricks.service.UserLoginService;
+import com.magicbricks.utils.Constant;
+
+@Configuration
+@EnableOAuth2Sso
+public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	Constant Constant;
+
+	@Autowired
+	UserLoginService loginService;
+
+	@Autowired
+	ResourceServerProperties sso;
+	
+	@Override
+	public void configure(HttpSecurity http) throws Exception {
+
+		http.csrf().disable();
+		http
+		.authorizeRequests()
+		.antMatchers("/package-mapping/**", "/telecallerSearchPage", "/appointmentSearchPage/**", "/searchResult", "/managerSearchPage", "/reports/**").authenticated();
+
+		http
+		.logout()
+		.and()
+		.antMatcher("/**").authorizeRequests().antMatchers("/index", "/", "/login", "/logout", "/oauth/**", "/vlapi/**", "/healthcheck", "/rest/**").permitAll()
+		.and()
+		.logout()
+		.logoutSuccessUrl(Constant.USER_MANAGEMENT_DOMAIN + "logout").logoutUrl("/logout").permitAll();
+
+		http.addFilterBefore(new CustomAuthenticationFilter(loginService), BasicAuthenticationFilter.class);
+	}
+
+	@Override
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(new CustomAuthenticationProvider(sso));
+	}
+}

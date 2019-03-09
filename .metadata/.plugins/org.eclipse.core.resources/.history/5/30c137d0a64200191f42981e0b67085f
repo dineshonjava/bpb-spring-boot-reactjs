@@ -1,0 +1,9 @@
+package com.dineshonjava.prodos.service;
+
+import com.dineshonjava.prodos.ProdosClientApplication;
+import com.magicbricks.bean.User;
+
+public interface UserLoginService {
+	
+	public Ac getAuthenticatedUserRecord();
+}

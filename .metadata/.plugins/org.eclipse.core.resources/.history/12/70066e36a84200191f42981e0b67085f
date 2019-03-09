@@ -1,0 +1,62 @@
+package com.dineshonjava.prodos.service;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.magicbricks.dto.ProxyResponseDto;
+import com.magicbricks.restcalls.RestCallService;
+import com.magicbricks.utils.Constant;
+
+@Component
+public class ProxyService {
+	private static final Logger logger = LoggerFactory.getLogger(ProxyService.class);
+
+	@Autowired
+	private RestCallService restTemplateUtil;
+	
+	@Value("${security.oauth2.client.access-token-uri}")
+	private String ACCESS_TOKEN_API_DOMAIN_URL;
+	
+	@Value("${ACCESS.TOKEN.API.AUTH}")
+	private String ACCESS_TOKEN_API_AUTH;
+
+	public String generateAccessToken(String username, String password) {
+		logger.debug(" Inside generateAccessToken method ");
+		String response = null;
+		Map<String, String> qparams = new HashMap<String, String>();
+
+		qparams.put("username", username);
+		qparams.put("password", password);
+		qparams.put("grant_type", "password");
+
+		String auth = ACCESS_TOKEN_API_AUTH;
+		
+		try {
+			response = restTemplateUtil.restTemplatePost(ACCESS_TOKEN_API_DOMAIN_URL + Constant.ACCESS_TOKEN_API_ENDPOINT, qparams, auth);
+		} catch (Exception e) {
+			logger.error("Exception while calling access token API:{} ", e.getMessage());
+		}
+
+		if (!StringUtils.isEmpty(response)) {
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				ProxyResponseDto proxyResp = mapper.readValue(response, ProxyResponseDto.class);
+
+				response = proxyResp.getAccess_token();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		logger.debug(" Exiting generateAccessToken method with accessToken:{}", response);
+		return response;
+	}
+}

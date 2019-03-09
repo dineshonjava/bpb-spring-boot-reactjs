@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package com.dineshonjava.prodos.security;
+
+/**
+ * @author Dinesh.Rajput
+ *
+ */
+public class JwtTokenProvider {
+
+}

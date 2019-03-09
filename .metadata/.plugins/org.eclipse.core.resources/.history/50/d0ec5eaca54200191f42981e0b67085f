@@ -1,0 +1,392 @@
+package com.magicbricks.restcalls;
+
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.RestTemplate;
+
+import com.magicbricks.bean.PhotoshootFunnelReportIntermediateBean;
+import com.magicbricks.bean.PhotoshootReportBean;
+import com.magicbricks.bean.User;
+import com.magicbricks.dto.DispositionDto;
+import com.magicbricks.dto.Tppmt;
+import com.magicbricks.dto.Tpubi;
+import com.magicbricks.service.UserLoginService;
+import com.magicbricks.utils.Constant;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
+@Service
+public class RestCallServiceImpl implements RestCallService{
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(RestCallServiceImpl.class);
+	
+	
+	@Autowired
+	Constant Constant;
+	@Autowired
+	UserLoginService loginService;
+	private int timeout = 30 * 1000;
+	
+	public RestTemplate getRestTemplate(){
+	    RequestConfig config = RequestConfig.custom()
+	                   .setConnectTimeout(timeout)
+	                   .setConnectionRequestTimeout(timeout)	
+	                   .setSocketTimeout(timeout).setAuthenticationEnabled(true)
+	                   .build();
+	    CloseableHttpClient client = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
+	    RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory(client));
+	    return restTemplate;
+	}
+	
+	public HttpHeaders getAuthenticationHeaderForMasterData(){
+		HttpHeaders headers = new HttpHeaders();
+		String plainCreds = Constant.REST_API_AUTH_CREDENTIAL;
+		byte[] plainCredsBytes = plainCreds.getBytes();	
+		byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);	
+		String base64Creds = new String(base64CredsBytes);
+		headers.add("Authorization", "Basic " + base64Creds);
+		return headers;
+	}
+	
+	public HttpHeaders getAuthenticationHeaderForUserData(){
+		OAuth2Authentication auth = (OAuth2Authentication)SecurityContextHolder.getContext().getAuthentication(); 
+		if(auth != null){
+			OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails)auth.getDetails();
+			if(details != null && !StringUtils.isEmpty(details.getTokenValue())){
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				headers.set("Authorization", "Bearer " + details.getTokenValue());
+				return headers;
+			}
+		}
+		return null;
+	}
+	
+	@HystrixCommand(fallbackMethod = "reliable")
+	public User findUserByUsername(String username){
+		URI uri = URI.create(Constant.USER_MANAGEMENT_DOMAIN + "user/info?username=" + username);
+		//HttpHeaders headers = restTemplateCallService.getAuthenticationHeaderForUserData();
+		RequestEntity<User> requestEntity = new RequestEntity<User>(HttpMethod.GET, uri);
+		RestTemplate restTemplate = getRestTemplate();
+		ResponseEntity<User> data = restTemplate.exchange(requestEntity, User.class);
+		if(data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() !=null){
+			return (User) data.getBody();
+		} 
+		return null;
+	}
+	
+	public User reliable(String username) {
+		return new User();
+	}
+	
+	@HystrixCommand(fallbackMethod = "getReporteeFallbackMethod")
+	public Map<String,String> getReportee(String username,String module,String city) {
+		URI uri = URI.create(Constant.USER_MANAGEMENT_DOMAIN + "user/reportee-list?username="+username+"&modulename="+module+"&city="+city);
+		RequestEntity<Map> requestEntity = new RequestEntity<Map>(HttpMethod.GET, uri);
+		RestTemplate restTemplate = getRestTemplate();
+		ResponseEntity<Map> data = restTemplate.exchange(requestEntity, Map.class);
+		if(data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() !=null){
+			return (Map) data.getBody().get("Result");
+		} 
+		return null;
+	}
+	
+	public Map<String,String> getReporteeFallbackMethod(String username,String module,String city) {
+		return new HashMap<String,String>();
+	}
+	
+	/*
+	 * autologinUrl returns auto login Url of magicbricks
+	 * @Param username
+	 * @Param redirecturl
+	 * @Param expirydays
+	 */
+	//@HystrixCommand(fallbackMethod = "autologinUrlcallbackMethod")
+	@Override
+	public String autologinUrl(String username,String redirecturl,String expirydays) {
+		String response = null;
+		try {
+			URI uri = URI.create(Constant.REST_API_URL + "userinfo/autologinUrl?useremail="+username+"&expirydays="+expirydays+"&redirecturl="+redirecturl);
+			RequestEntity<String> requestEntity = new RequestEntity<String>(HttpMethod.GET, uri);
+			RestTemplate restTemplate = getRestTemplate();
+			ResponseEntity<String> data = restTemplate.exchange(requestEntity, String.class);
+			if(data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() !=null){
+				response =  data.getBody();
+			} 
+		}catch(Exception ex) {
+			LOGGER.error("Error has been occured in autologinUrl: "+ex.getMessage());
+		}
+		return (response== null?Constant.ORDER_DASHBOARD_URL:response.replace("\"", ""));
+	}
+	/*
+	 * fallback method of autologinUrl login request
+	 */
+	public String autologinUrlcallbackMethod(String username,String redirecturl,String expirydays) {
+		return Constant.ORDER_DASHBOARD_URL;
+	}
+	
+	
+	public List<User> getAllActiveFveList() {
+		URI uri = URI.create(Constant.USER_MANAGEMENT_DOMAIN + "user/all-active-fve-list");
+		RequestEntity<Map> requestEntity = new RequestEntity<Map>(HttpMethod.GET, uri);
+		RestTemplate restTemplate = getRestTemplate();
+		ResponseEntity<List<User>> data = restTemplate.exchange(requestEntity, new ParameterizedTypeReference < List < User >> () {});
+		if(data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() !=null){
+			return (List<User>) data.getBody();
+		} 
+		return null;
+	}
+	
+	@Cacheable(cacheNames = "masterDataCache", key = "#root.method.name")
+	public Map<String, String> getAmsUserDetails(){
+		try{
+			URI uri = new URI(Constant.REST_API_URL + "amsrestmodule/ams-user-details");
+			HttpHeaders headers = getAuthenticationHeaderForMasterData();
+			RequestEntity<Map<String, String>> requestEntity = new RequestEntity<Map<String, String>>(headers, HttpMethod.GET, uri);
+			RestTemplate restTemplate = getRestTemplate();
+			ResponseEntity<Map<String, String>> data = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Map<String, String>>(){});
+			if(data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() != null)
+				return  (Map<String, String>) data.getBody();
+		}catch(Exception e){
+			LOGGER.error("Exception in Master Service"+e);
+		}
+		return null;
+	}
+	
+	public List<PhotoshootReportBean> getPhotoshootOrderDetails(String startDate, String endDate){
+		try{
+			URI uri = new URI(Constant.REST_API_URL + "subscription/get-photoshoot-order-details?startDate="+startDate+"&endDate="+endDate);
+			HttpHeaders headers = getAuthenticationHeaderForMasterData();
+			RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, uri);
+			RestTemplate restTemplate = getRestTemplate();
+			ResponseEntity<List<PhotoshootReportBean>> data = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<PhotoshootReportBean>>(){});
+			if(data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() != null)
+				return  (List<PhotoshootReportBean>) data.getBody();
+		}catch(Exception e){
+			LOGGER.error("Exception in Master Service"+e);
+		}
+		return null;
+	}
+	
+	
+	
+		public Tpubi getUbiDetailsByRfNum(Long ubirfnum) {
+		try {
+			URI uri = new URI(Constant.REST_API_URL + "userinfo/ubirfnum/" + ubirfnum);
+			HttpHeaders headers = getAuthenticationHeaderForMasterData();
+			RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, uri);
+			RestTemplate restTemplate = getRestTemplate();
+			ResponseEntity<Tpubi> data = restTemplate.exchange(requestEntity,new ParameterizedTypeReference<Tpubi>() {});
+			if (data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() != null) {
+				LOGGER.info("data body : {}",data.getBody());
+				return (Tpubi) data.getBody();
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception in Master Service" + e);
+		}
+		return null;
+	}
+
+	@Override
+	public List<PhotoshootFunnelReportIntermediateBean> getFunnelReportObjects(String startDate, String endDate) {
+		try{
+			URI uri = new URI(Constant.REST_API_URL + "subscription/funnelReportData?startDate="+startDate+"&endDate="+endDate);
+			HttpHeaders headers = getAuthenticationHeaderForMasterData();
+			RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, uri);
+			RestTemplate restTemplate = getRestTemplate();
+			ResponseEntity<List<PhotoshootFunnelReportIntermediateBean>> data = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<PhotoshootFunnelReportIntermediateBean>>(){});
+			if(data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() != null)
+				return  (List<PhotoshootFunnelReportIntermediateBean>) data.getBody();
+		}catch(Exception e){
+			LOGGER.error("Exception in Master Service"+e);
+		}
+		return null;		
+	}
+
+	@Override
+	public Tppmt getPropertyInfoByPropertyId(String pmtrfnum) {
+		try {
+			LOGGER.info("Entered getPropertyInfoByPropertyId for propertyid : "+pmtrfnum);
+			URI uri = new URI(Constant.REST_API_URL + "property/dto/" + pmtrfnum);
+			HttpHeaders headers = getAuthenticationHeaderForMasterData();
+			RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.GET, uri);
+			RestTemplate restTemplate = getRestTemplate();
+			ResponseEntity<Tppmt> data = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<Tppmt>() {
+			});
+			if (data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() != null) {
+				LOGGER.info("getPropertyInfoByPropertyId data return : "+data.getBody());
+				return (Tppmt) data.getBody();
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception in Master Service" + e);
+		}
+		LOGGER.info("getPropertyInfoByPropertyId data outside, return null");
+		return null;
+	}
+	
+	
+	/*
+	 * findUstEndDateForOrderId returns Order id enddate
+	 * @Param orderId
+	 * 
+	 */
+	@HystrixCommand(fallbackMethod = "findUstEndDateForOrderIdCallback")
+	@Override
+	public Date findUstEndDateForOrderId(String orderId) {
+		URI uri = URI.create(Constant.REST_API_URL + "orderdashboard/orderenddate/"+orderId);
+		RequestEntity<Date> requestEntity = new RequestEntity<Date>(HttpMethod.GET, uri);
+		RestTemplate restTemplate = getRestTemplate();
+		ResponseEntity<Date> data = restTemplate.exchange(requestEntity, Date.class);
+		if(data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() !=null){
+			return (Date) data.getBody();
+		} 
+		return null;
+  }
+	
+	/*
+	 * fallback method of findUstEndDateForOrderId
+	 */
+	public Date findUstEndDateForOrderIdCallback(String orderId) {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 30);
+		return cal.getTime();
+	}
+	@Override
+	public List<Tppmt> getPropertiesData(List<Long> pmtrfnumList) {
+		try {
+			LOGGER.info("Entered getPropertiesData : "+pmtrfnumList);
+			LOGGER.info("Entered getPropertiesData size: "+pmtrfnumList.size());
+			URI uri = new URI(Constant.REST_API_URL + "property/propertyInfo");
+			HttpHeaders headers = getAuthenticationHeaderForMasterData();
+			RequestEntity<List<Long>> requestEntity = new RequestEntity<List<Long>>(pmtrfnumList,headers, HttpMethod.POST, uri);
+			RestTemplate restTemplate = getRestTemplate();
+			ResponseEntity<List<Tppmt>> data = restTemplate.exchange(requestEntity, new ParameterizedTypeReference<List<Tppmt>>() {
+			});
+			if (data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() != null) {
+				LOGGER.info("getPropertiesData data return : "+data.getBody());
+				return (List<Tppmt>) data.getBody();
+			}
+		} catch (Exception e) {
+			LOGGER.error("Exception in Master Service" + e);
+		}
+		LOGGER.info("getPropertiesData data outside, return null");
+		return null;
+	}
+	
+	@Override
+	public DispositionDto getDispositionsByGroupName(String groupName) {
+		RestTemplate restTemplate = getRestTemplate();
+		ResponseEntity<DispositionDto> responseData = null;
+		try {
+			URI uri = URI.create(Constant.REST_API_URL + "/get-status-list/" + groupName);
+			RequestEntity<Map> requestEntity = new RequestEntity<Map>(getAuthenticationHeaderForMasterData(),
+					HttpMethod.GET, uri);
+			responseData = restTemplate.exchange(requestEntity, DispositionDto.class);
+			if (responseData != null && responseData.getStatusCode() == HttpStatus.OK
+					&& responseData.getBody() != null) {
+				LOGGER.info("responseData.getBody() in getDispositionsByGroupName" + responseData.getBody());
+				return (DispositionDto) responseData.getBody();
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error in getDispositionsByGroupName : " + e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	@Override
+	public String restTemplatePost(String url, Map<String, String> param, String auth) {
+		RestTemplate restTemplate = getRestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+
+		if (!ObjectUtils.isEmpty(auth)) {
+			byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
+			String authHeader = "Basic " + new String(encodedAuth);
+			headers.set("Authorization", authHeader);
+			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		} else {
+			headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+		}
+
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+		for (Entry<String, String> entry : param.entrySet()) {
+			params.add(entry.getKey(), entry.getValue());
+		}
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(params, headers);
+		ResponseEntity<String> response = null;
+
+		LOGGER.debug(" POST API " + url);
+		LOGGER.debug(" POST API REQUEST " + request);
+
+		if (!ObjectUtils.isEmpty(auth)) {
+			response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+		} else {
+			response = restTemplate.postForEntity(url, request, String.class);
+		}
+		LOGGER.debug(" Response for POST API:{} is {} ", url, response.getBody());
+
+		return response.getBody();
+	}
+	
+	@Override
+	public String restTemplateGetCallDispose(String url, Map<String, String> param) {
+		RestTemplate restTemplate = getRestTemplate();
+
+		LOGGER.error(" GET API:" + url + " params: " + param);
+
+		String response = restTemplate.getForObject(url, String.class, param);
+
+		LOGGER.error("Response:: {}", response);
+
+		return response;
+	}
+
+	public List<PhotoshootFunnelReportIntermediateBean> getOrderIdsForPaidOwnerNonPhotoshootReport(String startDate,
+			String endDate) {
+		URI uri = URI.create(Constant.REST_API_URL + "subscription/paidOrdersWithNonPhotoshootService?startDate="
+				+ startDate + "&endDate=" + endDate);
+		HttpHeaders headers = getAuthenticationHeaderForMasterData();
+		ResponseEntity<List<PhotoshootFunnelReportIntermediateBean>> data = null;
+		RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, uri);
+		RestTemplate restTemplate = getRestTemplate();
+		ParameterizedTypeReference<List<PhotoshootFunnelReportIntermediateBean>> typeRef = new ParameterizedTypeReference<List<PhotoshootFunnelReportIntermediateBean>>() {
+		};
+		data = restTemplate.exchange(requestEntity, typeRef);
+		if (data != null && data.getStatusCode() == HttpStatus.OK && data.getBody() != null) {
+			return (List<PhotoshootFunnelReportIntermediateBean>) data.getBody();
+		}
+		return null;
+	}
+}

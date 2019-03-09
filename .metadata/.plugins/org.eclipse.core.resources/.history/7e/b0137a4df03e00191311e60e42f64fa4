@@ -1,0 +1,28 @@
+/**
+ * 
+ */
+package com.dineshonjava.prodos.security;
+
+import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+/**
+ * @author Dinesh.Rajput
+ *
+ */
+public class JwtAuthenticationConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+	
+    private JwtTokenAuthenticationProvider jwtTokenAuthenticationProvider;
+
+    public JwtAuthenticationConfigurer(JwtTokenAuthenticationProvider jwtTokenAuthenticationProvider) {
+        this.jwtTokenAuthenticationProvider = jwtTokenAuthenticationProvider;
+    }
+
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        JwtTokenAuthenticationFilter customFilter = new JwtTokenAuthenticationFilter(jwtTokenAuthenticationProvider);
+        http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+}

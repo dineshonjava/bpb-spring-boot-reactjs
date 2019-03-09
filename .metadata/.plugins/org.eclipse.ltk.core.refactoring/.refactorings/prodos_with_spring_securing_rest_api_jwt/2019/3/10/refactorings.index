@@ -1,0 +1,8 @@
+1551679198501	Rename type 'AuthController'
+1551681408418	Delete element
+1551752636973	Rename type 'JwtTokenFilter'
+1551753019883	Rename type 'JwtTokenProvider'
+1551753090847	Rename type 'JwtConfigurer'
+1551753742560	Rename type 'JwtTokenAuthenticationProvider'
+1551753869161	Rename type 'JwtTokenAuthenticationFilter'
+1552161965201	Copy compilation unit

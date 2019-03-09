@@ -1,0 +1,20 @@
+#*****application configuration***
+server.port=8181
+server.servlet.context-path=/prodos_resource_srvr
+
+# *******DB Config*******
+spring.jpa.show-sql=true
+
+# *******Logging*******
+logging.level.root=INFO
+logging.level.org.springframework.security: INFO
+
+# *******OAuth Config*******
+security.oauth2.resource.userInfoUri=@AUTH_SERVER_DOMAIN@user
+security.oauth2.client.accessTokenUri=@AUTH_SERVER_DOMAIN@oauth/token
+security.oauth2.client.userAuthorizationUri=@AUTH_SERVER_DOMAIN@oauth/authorize
+security.oauth2.client.clientId=magicbricks
+security.oauth2.client.clientSecret=password
+
+MBOAUTH_API_URL=@AUTH_SERVER_DOMAIN@
+

@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "feedback.client.port",
+    "type": "java.lang.String",
+    "description": "Set the port for the remote feedback service"
+  },
+  {
+    "name": "feedback.client.timeout",
+    "type": "java.lang.String",
+    "description": "Set maximum timeout for the feedback service in milliseconds"
+  },
+  {
+    "name": "feedback.client.host",
+    "type": "java.lang.String",
+    "description": "Set the host name for the remote feedback service"
+  }
+]}

@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package com.dineshonjava.prodos.security.config;
+
+/**
+ * @author Dinesh.Rajput
+ *
+ */
+public class AuthorizationServer {
+
+}

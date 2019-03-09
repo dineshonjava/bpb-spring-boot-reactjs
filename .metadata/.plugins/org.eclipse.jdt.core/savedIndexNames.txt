@@ -1,0 +1,17 @@
+INDEX VERSION 1.131+F:\bpb-spring-boot-ws\.metadata\.plugins\org.eclipse.jdt.core
+1203396015.index
+1875868861.index
+931886830.index
+3122299287.index
+1542665440.index
+3632847845.index
+3394758922.index
+3659987980.index
+2832758631.index
+1199764155.index
+1117695262.index
+3882042908.index
+4200567765.index
+3996948621.index
+1099653090.index
+748409797.index

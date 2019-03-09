@@ -1,0 +1,8 @@
+#application configuration
+server.port=8181
+server.servlet.context-path=/prodos
+
+spring.jpa.show-sql=true
+
+
+security.oauth2.resource.filter-order=3 

@@ -1,0 +1,5 @@
+#application configuration
+server.port=8282
+server.servlet.context-path=/prodos_auth
+
+spring.jpa.show-sql=true

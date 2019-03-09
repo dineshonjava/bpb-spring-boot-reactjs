@@ -1,0 +1,55 @@
+package com.magicbricks.restcalls;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestTemplate;
+
+import com.magicbricks.bean.PhotoshootFunnelReportIntermediateBean;
+import com.magicbricks.bean.PhotoshootReportBean;
+import com.magicbricks.bean.User;
+import com.magicbricks.dto.DispositionDto;
+import com.magicbricks.dto.Tppmt;
+import com.magicbricks.dto.Tpubi;
+
+public interface RestCallService {
+
+	RestTemplate getRestTemplate();
+
+	HttpHeaders getAuthenticationHeaderForMasterData();
+
+	HttpHeaders getAuthenticationHeaderForUserData();
+
+	User findUserByUsername(String username);
+
+	Map<String, String> getReportee(String username, String module, String city);
+
+	List<User> getAllActiveFveList();
+
+	Map<String, String> getAmsUserDetails();
+
+	List<PhotoshootReportBean> getPhotoshootOrderDetails(String startDate, String endDate);
+
+	public Tpubi getUbiDetailsByRfNum(Long ubirfnum);
+
+	List<PhotoshootFunnelReportIntermediateBean> getFunnelReportObjects(String startDate, String endDate);
+
+	String autologinUrl(String username, String redirecturl, String expirydays);
+
+	Tppmt getPropertyInfoByPropertyId(String pmtrfnum);
+
+	Date findUstEndDateForOrderId(String orderId);
+
+	List<Tppmt> getPropertiesData(List<Long> pmtrfnumList);
+
+	DispositionDto getDispositionsByGroupName(String groupName);
+
+	String restTemplatePost(String url, Map<String, String> param, String auth);
+	
+	String restTemplateGetCallDispose(String url, Map<String, String> param);
+
+	List<PhotoshootFunnelReportIntermediateBean> getOrderIdsForPaidOwnerNonPhotoshootReport(String startDate, String endDate);
+
+}

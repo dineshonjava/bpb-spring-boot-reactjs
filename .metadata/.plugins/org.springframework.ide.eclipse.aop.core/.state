@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aop-reference-model>
+<aop-project name="prodos_with_spring_securing_rest_api"/>
+<aop-project name="prodos_with_spring_securing_rest_api_jwt"/>
+<aop-project name="prodos_with_spring_security_oauth2_server_app"/>
+<aop-project name="prodos_with_spring_security_oauth2_client_app"/>
+<aop-project name="prodos_with_spring_security_oauth2_resource_server_app"/>
+</aop-reference-model>

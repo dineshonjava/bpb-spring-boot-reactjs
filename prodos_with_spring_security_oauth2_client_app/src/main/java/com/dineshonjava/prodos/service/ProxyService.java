@@ -1,0 +1,63 @@
+package com.dineshonjava.prodos.service;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.dineshonjava.prodos.dto.ProxyResponseDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Service
+public class ProxyService {
+	private static final Logger logger = LoggerFactory.getLogger(ProxyService.class);
+
+	@Autowired
+	private RestCallService restTemplateUtil;
+	
+	@Value("${security.oauth2.client.access-token-uri}")
+	private String ACCESS_TOKEN_API_DOMAIN_URI;
+	
+	@Value("${security.oauth2.client.client-id}")
+	private String ACCESS_TOKEN_API_CLIENT_ID;
+	
+	@Value("${security.oauth2.client.client-secret}")
+	private String ACCESS_TOKEN_API_CLIENT_SECRET;
+
+	public String generateAccessToken(String username, String password) {
+		logger.debug(" Inside generateAccessToken method ");
+		String response = null;
+		Map<String, String> qparams = new HashMap<String, String>();
+
+		qparams.put("username", username);
+		qparams.put("password", password);
+		qparams.put("grant_type", "password");
+
+		String auth = ACCESS_TOKEN_API_CLIENT_ID+":"+ACCESS_TOKEN_API_CLIENT_SECRET;
+		
+		try {
+			response = restTemplateUtil.restTemplatePost(ACCESS_TOKEN_API_DOMAIN_URI, qparams, auth);
+		} catch (Exception e) {
+			logger.error("Exception while calling access token API:{} ", e.getMessage());
+		}
+
+		if (!StringUtils.isEmpty(response)) {
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				ProxyResponseDto proxyResp = mapper.readValue(response, ProxyResponseDto.class);
+
+				response = proxyResp.getAccess_token();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		logger.debug(" Exiting generateAccessToken method with accessToken:{}", response);
+		return response;
+	}
+}

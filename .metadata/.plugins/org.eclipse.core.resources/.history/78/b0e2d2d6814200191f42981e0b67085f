@@ -1,0 +1,7 @@
+#application configuration
+server.port=8181
+server.servlet.context-path=/auth
+
+spring.jpa.show-sql=true
+
+

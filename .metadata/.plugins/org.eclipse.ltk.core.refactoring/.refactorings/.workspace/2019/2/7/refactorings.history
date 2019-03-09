@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename Java project &apos;prodos_with_spring_data_jpa&apos; to &apos;prodos_with_spring_data_jpa_h2&apos;&#x0D;&#x0A;- Original element: &apos;prodos_with_spring_data_jpa&apos;&#x0D;&#x0A;- Renamed element: &apos;prodos_with_spring_data_jpa&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename Java project &apos;prodos_with_spring_data_jpa&apos;" flags="7" id="org.eclipse.jdt.ui.rename.java.project" input="=prodos_with_spring_data_jpa" name="prodos_with_spring_data_jpa_h2" references="true" stamp="1550081756431" version="1.0"/>
+</session>

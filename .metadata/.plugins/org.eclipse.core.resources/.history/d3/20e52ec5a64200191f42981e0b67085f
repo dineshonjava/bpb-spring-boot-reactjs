@@ -1,0 +1,8 @@
+package com.magicbricks.service;
+
+import com.magicbricks.bean.User;
+
+public interface UserLoginService {
+	
+	public User getAuthenticatedUserRecord();
+}

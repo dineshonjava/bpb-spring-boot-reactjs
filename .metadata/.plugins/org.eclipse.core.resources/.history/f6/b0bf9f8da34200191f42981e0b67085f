@@ -1,0 +1,10 @@
+server.servlet.context-path=/prodosapp
+server.port=9000
+
+spring.thymeleaf.cache=false
+
+
+#security.oauth2.client.access-token-uri=http://localhost:8282/prodos_auth_srvr/oauth/token
+#security.oauth2.client.user-authorization-uri=http://localhost:8282/prodos_auth_srvr/oauth/authorize
+#security.oauth2.client.client-id=dineshonjava
+#security.oauth2.client.client-secret=$2a$04$TJmCr9KA4dRF1Gir.zQ1TO/q9qELju1EzDpYhFBlbjxevCI7HZY5G

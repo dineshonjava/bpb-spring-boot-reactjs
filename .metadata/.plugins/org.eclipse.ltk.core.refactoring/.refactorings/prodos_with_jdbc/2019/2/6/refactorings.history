@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;HomeController.java&apos; to &apos;prodos_with_jdbc/src/main/java/com.dineshonjava.prodos.controller&apos;&#x0D;&#x0A;- Original project: &apos;prodos_with_jdbc&apos;&#x0D;&#x0A;- Destination element: &apos;prodos_with_jdbc/src/main/java/com.dineshonjava.prodos.controller&apos;&#x0D;&#x0A;- Original element: &apos;com.dineshonjava.prodos.HomeController.java&apos;&#x0D;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="/src\/main\/java&lt;com.dineshonjava.prodos.controller" element1="/src\/main\/java&lt;com.dineshonjava.prodos{HomeController.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" patterns="*" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1549542016359" units="1" version="1.0"/>
+</session>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workingSetManager>
+<workingSet editPageId="org.eclipse.jdt.internal.ui.DynamicSourcesWorkingSet" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1547825966031_0" label="Java Main Sources" name="main"/>
+<workingSet editPageId="org.eclipse.jdt.internal.ui.DynamicSourcesWorkingSet" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1547825966178_1" label="Java Test Sources" name="test"/>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1549517275551_3" label="prodos_with_jdbc" name="prodos_with_jdbc">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/prodos_with_jdbc" type="4"/>
+</workingSet>
+<workingSet editPageId="org.eclipse.ui.resourceWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1549737103598_4" label="prodos_with_spring_data_jpa" name="prodos_with_spring_data_jpa">
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/prodos_with_spring_data_jpa_h2" type="4"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1547913991791_2" label="Window Working Set" name="Aggregate for window 1547913991791"/>
+</workingSetManager>

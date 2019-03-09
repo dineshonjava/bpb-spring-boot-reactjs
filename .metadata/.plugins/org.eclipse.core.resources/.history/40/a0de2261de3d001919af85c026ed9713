@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package com.dineshonjava.prodos.controller;
+
+/**
+ * @author Dinesh.Rajput
+ *
+ */
+public class AuthController {
+
+}

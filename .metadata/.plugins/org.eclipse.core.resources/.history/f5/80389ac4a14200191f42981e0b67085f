@@ -1,0 +1,21 @@
+#*****application configuration***
+server.port=8181
+server.servlet.context-path=/prodos_resource_srvr
+
+# *******DB Config*******
+spring.jpa.show-sql=true
+
+# *******Logging*******
+#logging.level.root=INFO
+#logging.level.org.springframework.security: INFO
+
+# *******OAuth Config*******
+security.oauth2.resource.user-info-uri=http://localhost:8282/prodos_auth_srvr/user
+#security.oauth2.resource.id=resource_id
+spring.main.allow-bean-definition-overriding=true
+
+#security.oauth2.client.access-token-uri=http://localhost:8282/prodos_auth_srvr/oauth/token
+#security.oauth2.client.user-authorization-uri=http://localhost:8282/prodos_auth_srvr/oauth/authorize
+#security.oauth2.client.client-id=dineshonjava
+#security.oauth2.client.client-secret=$2a$04$TJmCr9KA4dRF1Gir.zQ1TO/q9qELju1EzDpYhFBlbjxevCI7HZY5G
+

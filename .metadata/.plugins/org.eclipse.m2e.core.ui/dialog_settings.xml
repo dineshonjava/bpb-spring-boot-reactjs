@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.m2e.core.pom.dependencies">
+	</section>
+	<section name="org.eclipse.m2e.core.pom.overview">
+	</section>
+	<section name="MavenProjectImportWizardPage">
+		<list key="rootDirectory">
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_security_oauth2_client_app"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_spring_security_oauth2_resource_app"/>
+			<item value="F:\bpb-spring-boot-ws\spring-boot-security-oauth2-jwt-example"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_securing_rest_api_oauth2"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_securing_rest_api_oauth2_jwt"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_securing_rest_api_jwt"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_securing_rest_api"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_client_app_traverseon"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_rest_api_with_hypermedia"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_data_rest"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_rest_api"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_data_jpa_mariadb"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_spring_data_jpa"/>
+			<item value="F:\bpb-spring-boot-ws\prodos_with_jdbc"/>
+			<item value="F:\bpb-spring-boot-ws\users_and_groups"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="prodos_with_spring_security_oauth2_client_app"/>
+			<item value="prodos_spring_security_oauth2_resource_app"/>
+			<item value="prodos_with_spring_securing_rest_api_oauth2"/>
+			<item value="prodos_with_spring_securing_rest_api_oauth2_jwt"/>
+			<item value="prodos_with_spring_securing_rest_api_jwt"/>
+			<item value="prodos_with_spring_securing_rest_api"/>
+			<item value="prodos_client_app_traverseon"/>
+			<item value="prodos_with_spring_rest_api_with_hypermedia"/>
+			<item value="prodos_with_spring_data_rest"/>
+			<item value="prodos_with_spring_rest_api"/>
+			<item value="prodos_with_spring_data_jpa_mariadb"/>
+			<item value="prodos_with_spring_data_jpa"/>
+			<item value="prodos_with_jdbc"/>
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+		</list>
+	</section>
+</section>

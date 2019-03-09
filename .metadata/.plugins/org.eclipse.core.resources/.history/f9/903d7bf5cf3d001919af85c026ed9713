@@ -1,0 +1,16 @@
+package com.dineshonjava.prodos;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+//@EnableResourceServer
+//@EnableAuthorizationServer
+@SpringBootApplication
+public class ProdosApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ProdosApplication.class, args);
+	}
+
+}
+
