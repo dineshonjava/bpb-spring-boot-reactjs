@@ -5,7 +5,67 @@
   <link rel="self" href="https://spring.io/blog.atom" />
   <id>http://spring.io/blog.atom</id>
   <icon>https://spring.io/favicon.ico</icon>
-  <updated>2019-03-08T17:00:00Z</updated>
+  <updated>2019-03-13T06:13:00Z</updated>
+  <entry>
+    <title>This Week in Spring - March 12th, 2019</title>
+    <link rel="alternate" href="https://spring.io/blog/2019/03/13/this-week-in-spring-march-12th-2019" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Josh Long</name>
+    </author>
+    <id>tag:spring.io,2019-03-13:3602</id>
+    <updated>2019-03-13T06:13:00Z</updated>
+    <content type="html">&lt;p&gt;Hi Spring fans! What a week! I&amp;rsquo;m in Seattle, Washington where I&amp;rsquo;ve been spending time with Pivotal partner Microsoft talking about all things Spring, Cloud Foundry and Azure, and then tonight I spoke at the Seattle Java User Group on Reactive Spring. &lt;/p&gt;
+&lt;p&gt;Tomorrow morning I&amp;rsquo;m off to jolie Montreal, Canada for the epic ConFoo conference. Are &lt;a href="http://twitter.com/Starbuxman"&gt;you going to be around? Say hi!&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;Anyway, without further ado let&amp;rsquo;s get to this week&amp;rsquo;s roundup! &lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/03/11/memory-footprint-of-the-jvm"&gt;Memory footprint of the JVM&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/03/08/spring-boot-2-2-m1"&gt;Spring Boot 2.2 M1&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/03/08/a-bootiful-podcast-matt-raible-and-james-ward-at-devnexus-2019"&gt;A Bootiful Podcast: Matt Raible and James Ward at Devnexus 2019&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/03/07/spring-cloud-greenwich-sr1-is-now-available"&gt;Spring Cloud Greenwich.SR1 is now available&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/03/07/spring-data-moore-m2-released"&gt;Spring Data Moore M2 released&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/03/07/has-there-ever-been-a-better-time-to-become-a-java-developer"&gt;Has there ever been a better time to become a Java developer?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href="https://spring.io/blog/2019/03/06/spring-cloud-data-flow-and-skipper-2-0-ga-released"&gt;Spring Cloud Data Flow and Skipper 2.0 GA Released&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;I love this post on the nuances of assembly versus subscription in Reactor: &lt;a href="https://spring.io/blog/2019/03/06/flight-of-the-flux-1-assembly-vs-subscription"&gt;Flight of the Flux (part 1)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Good news everybody! Today marks the 30th anniversary of the &lt;a href="https://www.nbcnews.com/tech/tech-news/world-wide-web-30-its-inventor-has-warning-us-n982156"&gt;World Wide Web&lt;/a&gt;! Tim Berners Lee, who created the HTTP web, has a stark warning for us worth our attention.&lt;/li&gt;
+  &lt;li&gt;This is an interesting third-party project that generates HTTP request snippets &lt;a href="https://github.com/atkawa7/httpsnippet"&gt;for SpringFox which integrates Swagger with Spring&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;The Codecentric blog has an interesting approach to &lt;a href="https://blog.codecentric.de/en/2019/03/spot-mismatches-between-your-spec-and-your-rest-api/"&gt;spotting mismatches between your specification and your REST API with hikakug&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Have you seen this? A gorgeous Kotlin DSL that lets you build piplines in Kotlin code for the Spinnaker, &lt;a href="https://github.com/canal-pipelines/canal"&gt;the continuous delivery pipeline&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;Spring HATEOAS now &lt;a href="https://twitter.com/sebastien_pel/status/1102977786262757377"&gt;supports reactive and Spring WebFlux&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;</content>
+  </entry>
+  <entry>
+    <title>Memory footprint of the JVM</title>
+    <link rel="alternate" href="https://spring.io/blog/2019/03/11/memory-footprint-of-the-jvm" />
+    <category term="engineering" label="Engineering" />
+    <author>
+      <name>Andy Wilkinson</name>
+    </author>
+    <id>tag:spring.io,2019-03-07:3598</id>
+    <updated>2019-03-11T10:40:00Z</updated>
+    <content type="html">&lt;p&gt;The JVM can be a complex beast. Thankfully, much of that complexity is under the hood, and we as application developers and deployers often don&amp;rsquo;t have to worry about it too much. With the rise of container-based deployment strategies, one area of complexity that needs some attention is the JVM&amp;rsquo;s memory footprint.&lt;/p&gt;&lt;h2&gt;&lt;a href="#two-kinds-of-memory" class="anchor" name="two-kinds-of-memory"&gt;&lt;/a&gt;Two kinds of memory&lt;/h2&gt;
+&lt;p&gt;The JVM divides its memory into two main categories: heap memory and non-heap memory. Heap memory is the part with which people are typically the most familiar. It&amp;rsquo;s where objects that are created by the application are stored. They remain there until they are no longer referenced and are garbage collected. Typically, the amount of heap that an application is using will fluctuate as a function of the current load.&lt;/p&gt;
+&lt;p&gt;The JVM&amp;rsquo;s non-heap memory is divided into several different areas. We can use the HotSpot VM&amp;rsquo;s &lt;a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/nmt-8.html"&gt;native memory tracking (NMT)&lt;/a&gt; to examine its memory usage across these areas. Note that, while NMT does not track all native memory usage (it &lt;a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/nmt-8.html"&gt;does not track third party native code memory allocations&lt;/a&gt;, for example), it is sufficient for a large class of typical Spring applications. NMT can be used by starting the application with &lt;code&gt;-XX:NativeMemoryTracking=summary&lt;/code&gt; and then using &lt;code&gt;jcmd &amp;lt;pid&amp;gt; VM.native_memory summary&lt;/code&gt; to display the memory usage summary.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s illustrate the use of NMT by looking at an application, in this case our old friend, Petclinic. The following pie chart shows the JVM&amp;rsquo;s memory usage as reported by NMT (minus its own overhead) when starting Petclinic with a 48MB max heap (&lt;code&gt;-Xmx48M&lt;/code&gt;):&lt;/p&gt;
+&lt;center&gt;&#xD;
+&lt;img width=50% height=50% src="https://static.spring.io/blog/wilkinsona/20190311/memory-usage.png"&gt;&lt;/img&gt;&#xD;
+&lt;/center&gt;
+&lt;p&gt;As you can see non-heap memory accounts for the vast majority of the JVM&amp;rsquo;s memory usage with the heap memory accounting for only one sixth of the total. In this case it was roughly 44MB (with 33MB of that being used immediately after garbage collection). The non-heap memory usage was 223MB in total.&lt;/p&gt;&lt;h3&gt;&lt;a href="#native-memory-areas" class="anchor" name="native-memory-areas"&gt;&lt;/a&gt;Native Memory areas&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Compressed class space&lt;/strong&gt;: used to store information about the classes that have been loaded. Constrained by &lt;code&gt;MaxMetaspaceSize&lt;/code&gt;. A function of the number of classes that have been loaded.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Thread&lt;/strong&gt;: memory used by threads in the JVM. A function of the number of threads that are running.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Code cache&lt;/strong&gt;: memory used by the JIT to store its output. A function of the number of classes that have been loaded. Constrained by &lt;code&gt;ReservedCodeCacheSize&lt;/code&gt;. Can be reduced by tuning the JIT to, for example, disable tiered compilation.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;GC&lt;/strong&gt;: stores data used by the GC. Varies depending on which garbage collector is being used.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Symbol&lt;/strong&gt;: stores symbols such as field names, method signatures, and interned strings. Excessive symbol memory usage can be an indicator that Strings have been interned too aggressively.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Internal&lt;/strong&gt;: stores other internal data that does not fit into any of the other areas.&lt;/li&gt;
+&lt;/ul&gt;&lt;h3&gt;&lt;a href="#differences" class="anchor" name="differences"&gt;&lt;/a&gt;Differences&lt;/h3&gt;
+&lt;p&gt;Compared to heap memory, non-heap memory is less likely to vary under load. Once an application has loaded all of the classes that it will use and the JIT is fully warmed up, things will settle into a steady state. To see a reduction in compressed class space usage, the class loader that loaded the classes needs to be garbage collected. This was more common in the past when applications were deployed to servlet containers or app servers – the application&amp;rsquo;s class loader would be garbage collected when the application was undeployed – but rarely happens with modern approaches to application deployment.&lt;/p&gt;&lt;h2&gt;&lt;a href="#sizing-the-jvm" class="anchor" name="sizing-the-jvm"&gt;&lt;/a&gt;Sizing the JVM&lt;/h2&gt;
+&lt;p&gt;Configuring the JVM to make efficient use of a given amount of available RAM isn&amp;rsquo;t easy. If you launch the JVM with &lt;code&gt;-Xmx16M&lt;/code&gt; and expect it to use, at most, 16MB of RAM you are in for a nasty surprise.&lt;/p&gt;
+&lt;p&gt;An interesting area when sizing the JVM is the JIT&amp;rsquo;s code cache. By default, the HotSpot JVM will use up to 240MB. If the code cache is too small the JIT will run out of space to store its output and performance will suffer as a result. If the cache is too large, memory may be wasted. When sizing the code cache, it&amp;rsquo;s important to look at the effect on both your application&amp;rsquo;s memory usage and its performance.&lt;/p&gt;
+&lt;p&gt;When running in a Docker container, recent versions of Java are &lt;a href="https://bugs.openjdk.java.net/browse/JDK-8146115"&gt;now aware&lt;/a&gt; of the container&amp;rsquo;s memory limits and attempt to size the JVM accordingly. Unfortunately, this sizing often over-allocates non-heap memory and under-allocates the heap. Say you have an application running in a container with 2 CPUs and 512MB of memory available. You want it to be able to handle more load so you double the CPUs to 4 and the memory to 1GB. As we discussed above, heap usage typically varies depending on the load, and non-heap usage much less so. Therefore, we&amp;rsquo;d like the vast majority of the extra 512MB of memory to be given to the heap to cope with the increased load. Unfortunately, the JVM does not do so by default and will allocate the additional memory more equally between its heap and non-heap areas.&lt;/p&gt;
+&lt;p&gt;Thankfully, the CloudFoundry team have a wealth of knowledge about the JVM&amp;rsquo;s memory footprint. If you&amp;rsquo;re pushing apps to CloudFoundry, the build pack will automatically apply this knowledge for you. If you&amp;rsquo;re not using CloudFoudry, or you&amp;rsquo;d like to understand more about how to size your JVM, the &lt;a href="https://docs.google.com/document/d/1vlXBiwRIjwiVcbvUGYMrxx2Aw1RVAtxq3iuZ3UK2vXA/edit?usp=sharing"&gt;design document&lt;/a&gt; for version three of the &lt;a href="https://github.com/cloudfoundry/java-buildpack-memory-calculator"&gt;Java buildpack&amp;rsquo;s memory calculator&lt;/a&gt; provides some highly recommended further reading.&lt;/p&gt;&lt;h2&gt;&lt;a href="#what-does-this-mean-for-spring" class="anchor" name="what-does-this-mean-for-spring"&gt;&lt;/a&gt;What does this mean for Spring?&lt;/h2&gt;
+&lt;p&gt;We spend a lot of time on the Spring team thinking about performance and memory utilisation, considering both heap and non-heap memory usage. One way to limit non-heap memory usage is to make parts of the Framework as general-purpose as possible. An example of this is the use of reflection to create and inject dependencies into your application&amp;rsquo;s beans. Thanks to the use of reflection, the amount of Framework code that&amp;rsquo;s used remains constant, irrespective of how many beans your application contains. We use a heap-based cache to optimise startup time, clearing this cache once startup has completed. The heap memory can then be easily reclaimed by the garbage collector, making as much memory as possible available to your application as it handles its workload.&lt;/p&gt;</content>
+  </entry>
   <entry>
     <title>Spring Boot 2.2 M1</title>
     <link rel="alternate" href="https://spring.io/blog/2019/03/08/spring-boot-2-2-m1" />
@@ -1744,58 +1804,5 @@ Dependent libraries that had recent CVEs reported were updated.&lt;/p&gt;
 &lt;p&gt;Detailed changes can be found here: &lt;a href="https://github.com/spring-projects/sts4/wiki/Changelog#2019-02-21-412-release"&gt;https://github.com/spring-projects/sts4/wiki/Changelog#2019-02-21-412-release&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Spring Tools 4.2.0 is scheduled to be released in late March 2019 (including an update to Eclipse 2019-03).&lt;/p&gt;
 &lt;p&gt;Enjoy!&lt;/p&gt;</content>
-  </entry>
-  <entry>
-    <title>A Bootiful Podcast: an Interview with Sree Tummidi, Senior Product Manager for Security at Pivotal</title>
-    <link rel="alternate" href="https://spring.io/blog/2019/02/22/a-bootiful-podcast-an-interview-with-sree-tummidi-senior-product-manager-for-security-at-pivotal" />
-    <category term="engineering" label="Engineering" />
-    <author>
-      <name>Josh Long</name>
-    </author>
-    <id>tag:spring.io,2019-02-22:3572</id>
-    <updated>2019-02-22T00:34:09Z</updated>
-    <content type="html">&lt;p&gt;Hi Spring fans! This week I&amp;rsquo;m excited to welcome Sreee Tummidi, a senior product manager working at the intersection of application security and platform at Pivotal. We talked about security, Spring Security, cloud platforms, OAuth, OIDC and OIDC Connect, SAML, and of course the Cloud Foundry UAA, and tons more.&lt;/p&gt;
-&lt;p&gt;Twitter: &lt;a href="http://twitter.com/sreetummidi"&gt;@sreetummidi&lt;/a&gt;&lt;br/&gt;&lt;a href="github.com/cloudfoundry/uaa"&gt;UAA&lt;/a&gt;&lt;/p&gt;
-&lt;iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/579250395&amp;color=%23ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&amp;visual=true"&gt;&lt;/iframe&gt;</content>
-  </entry>
-  <entry>
-    <title>CVE-2019-3778: Spring Security OAuth 2.3.5, 2.2.4, 2.1.4, 2.0.17 Released</title>
-    <link rel="alternate" href="https://spring.io/blog/2019/02/21/cve-2019-3778-spring-security-oauth-2-3-5-2-2-4-2-1-4-2-0-17-released" />
-    <category term="releases" label="Releases" />
-    <author>
-      <name>Joe Grandja</name>
-    </author>
-    <id>tag:spring.io,2019-02-21:3571</id>
-    <updated>2019-02-21T17:06:10Z</updated>
-    <content type="html">&lt;div class="paragraph"&gt;
-&lt;p&gt;We have released Spring Security OAuth 2.3.5, 2.2.4, 2.1.4 and 2.0.17 to address &lt;a href="https://pivotal.io/security/cve-2019-3778"&gt;CVE-2019-3778: Open Redirector in spring-security-oauth2&lt;/a&gt;. Please review the information in the CVE report and upgrade immediately.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;For additional changes included in each release, please refer to:&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="ulist"&gt;
-&lt;ul&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://github.com/spring-projects/spring-security-oauth/milestone/42?closed=1"&gt;2.3.5 changelog&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://github.com/spring-projects/spring-security-oauth/milestone/44?closed=1"&gt;2.2.4 changelog&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://github.com/spring-projects/spring-security-oauth/milestone/45?closed=1"&gt;2.1.4 changelog&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;&lt;a href="https://github.com/spring-projects/spring-security-oauth/milestone/43?closed=1"&gt;2.0.17 changelog&lt;/a&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;&lt;strong&gt;NOTE:&lt;/strong&gt; For users of &lt;strong&gt;Spring Boot 1.5.x&lt;/strong&gt; and &lt;strong&gt;Spring IO Platform Cairo&lt;/strong&gt;, it is highly recommended to override the &lt;code&gt;spring-security-oauth&lt;/code&gt; version to the latest version containing the fix for the CVE. Please see the &lt;strong&gt;Mitigation&lt;/strong&gt; section in the CVE report for detailed instructions on how to override the version.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class="paragraph"&gt;
-&lt;p&gt;&lt;a href="http://projects.spring.io/spring-security-oauth/"&gt;Project Page&lt;/a&gt; |
-&lt;a href="https://github.com/spring-projects/spring-security-oauth/"&gt;GitHub&lt;/a&gt; |
-&lt;a href="http://projects.spring.io/spring-security-oauth/docs/Home.html"&gt;Documentation&lt;/a&gt; | &lt;a href="http://stackoverflow.com/questions/tagged/spring-security-oauth2"&gt;Help&lt;/a&gt;&lt;/p&gt;
-&lt;/div&gt;</content>
   </entry>
 </feed>

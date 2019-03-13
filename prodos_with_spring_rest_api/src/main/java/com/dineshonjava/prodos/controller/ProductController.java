@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,37 +38,32 @@ public class ProductController {
 		this.productRepository = productRepository;
 	}
 	
-	@GetMapping("/products")
+	@GetMapping(value = "/products", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Product> findAll(){
 		List<Product> products = new ArrayList<>();
 		productRepository.findAll().forEach(i -> products.add(i));
 		return products;
 	}
 	
-	/*@GetMapping("/products/{id}")
-	public Product findProductById(@PathVariable String id){
-		return productRepository.findById(id).isPresent() ? productRepository.findById(id).get() : null;
-	}*/
-	
-	@GetMapping("/products/{id}")
+	@GetMapping(value = "/products/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Product> findProductById(@PathVariable String id){
 		return productRepository.findById(id).isPresent() ? 
 				new ResponseEntity<>(productRepository.findById(id).get(), HttpStatus.OK) : 
 					new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
 	}
 	
-	@PostMapping(value= "/products", consumes="application/json")
+	@PostMapping(value= "/products", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public Product postProduct(@RequestBody Product product) {
 		return productRepository.save(product);
 	}
 	
-	@PutMapping("/products/{id}")
+	@PutMapping(value = "/products/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Product putProduct(@RequestBody Product product) {
 		return productRepository.save(product);
 	}
 	
-	@PatchMapping(path="/products/{id}", consumes="application/json")
+	@PatchMapping(path="/products/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Product patchProduct(@PathVariable String id, @RequestBody Product patch) {
 		Product product = productRepository.findById(id).get();
 		if (patch.getBrand() != null) {

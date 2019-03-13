@@ -35,6 +35,6 @@ public class HomeControllerTest {
 		mockMvc.perform(get("/"))
 		.andExpect(status().isOk())
 		.andExpect(content().string(
-				containsString("Hello World")));
+				containsString("Hello World!!!")));
 	}
 }

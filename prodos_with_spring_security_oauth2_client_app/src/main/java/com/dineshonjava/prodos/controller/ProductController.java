@@ -6,6 +6,10 @@ package com.dineshonjava.prodos.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
 
 import com.dineshonjava.prodos.dto.Product;
+import com.dineshonjava.prodos.service.AuthService;
 
 /**
  * @author Dinesh.Rajput
@@ -22,10 +27,13 @@ import com.dineshonjava.prodos.dto.Product;
 @Controller
 public class ProductController {
 	
-	private final String BASE_URL = "http://localhost:8181/prodos";
+	private final String BASE_URL = "http://localhost:8181/prodos_resource_srvr";
 	
 	@Autowired
 	RestTemplate restTemplate;
+	
+	@Autowired
+	AuthService authService;
 	
 	@GetMapping("/")
 	public String home() {
@@ -35,7 +43,12 @@ public class ProductController {
 	@SuppressWarnings("unchecked")
 	@GetMapping("/products")
 	public String findAllProducts(ModelMap model) {
-		List<Product>  products = restTemplate.getForObject(BASE_URL+"/products", List.class);
+		String accessToken = authService.generateAccessToken("dinesh", "mypass");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Authorization", "Bearer " + accessToken);
+		HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+		List<Product>  products = restTemplate.exchange(BASE_URL+"/products", HttpMethod.GET, entity, List.class).getBody();
 		model.put("products", products);
 		return "products";
 	}

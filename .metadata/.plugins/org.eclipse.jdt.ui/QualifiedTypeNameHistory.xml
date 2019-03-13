@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="javax.annotation.Generated"/>
-<fullyQualifiedTypeName name="com.dineshonjava.prodos.repository.ProductRepository"/>
-<fullyQualifiedTypeName name="java.lang.reflect.Array"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="org.springframework.data.repository.Repository"/>
-<fullyQualifiedTypeName name="org.springframework.data.domain.Page"/>
-<fullyQualifiedTypeName name="org.springframework.data.domain.Pageable"/>
 <fullyQualifiedTypeName name="org.springframework.data.domain.Sort"/>
-<fullyQualifiedTypeName name="com.dineshonjava.prodos.domain.Product"/>
 <fullyQualifiedTypeName name="com.dineshonjava.prodos.domain.ProductResource"/>
-<fullyQualifiedTypeName name="com.dineshonjava.prodos.controller.ProductController"/>
 <fullyQualifiedTypeName name="java.util.HashMap"/>
 <fullyQualifiedTypeName name="org.springframework.stereotype.Controller"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.GetMapping"/>
-<fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
 <fullyQualifiedTypeName name="org.springframework.ui.ModelMap"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PathVariable"/>
 <fullyQualifiedTypeName name="org.springframework.hateoas.client.Traverson"/>
@@ -50,4 +40,24 @@
 <fullyQualifiedTypeName name="org.springframework.util.StringUtils"/>
 <fullyQualifiedTypeName name="com.dineshonjava.prodos.ProdosClientApplication"/>
 <fullyQualifiedTypeName name="com.dineshonjava.prodos.dto.AccountCredentials"/>
+<fullyQualifiedTypeName name="org.springframework.http.HttpMethod"/>
+<fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Configurable"/>
+<fullyQualifiedTypeName name="org.springframework.context.annotation.Configuration"/>
+<fullyQualifiedTypeName name="org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter"/>
+<fullyQualifiedTypeName name="org.springframework.boot.autoconfigure.security.SecurityProperties.Filter"/>
+<fullyQualifiedTypeName name="javax.servlet.Filter"/>
+<fullyQualifiedTypeName name="com.dineshonjava.prodos.controller.ProductController"/>
+<fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
+<fullyQualifiedTypeName name="com.dineshonjava.prodos.domain.Product"/>
+<fullyQualifiedTypeName name="org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest"/>
+<fullyQualifiedTypeName name="com.dineshonjava.prodos.repository.ProductRepository"/>
+<fullyQualifiedTypeName name="org.springframework.boot.test.mock.mockito.MockBean"/>
+<fullyQualifiedTypeName name="org.springframework.test.context.jdbc.Sql"/>
+<fullyQualifiedTypeName name="org.mockito.Mockito"/>
+<fullyQualifiedTypeName name="org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest"/>
+<fullyQualifiedTypeName name="org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa"/>
+<fullyQualifiedTypeName name="org.junit.Before"/>
+<fullyQualifiedTypeName name="javax.transaction.Transactional"/>
+<fullyQualifiedTypeName name="org.springframework.test.annotation.Rollback"/>
+<fullyQualifiedTypeName name="org.springframework.http.MediaType"/>
 </qualifiedTypeNameHistroy>

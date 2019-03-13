@@ -36,7 +36,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     static final String TRUST = "trust";
 	static final int ACCESS_TOKEN_VALIDITY_SECONDS = 1*60*60;
     static final int FREFRESH_TOKEN_VALIDITY_SECONDS = 6*60*60;
-	private String privateKey = "as466gf";
+	private String privateKey = "111dinesh000";
 	   
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -48,7 +48,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public JwtAccessTokenConverter tokenEnhancer() {
 		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
 		converter.setSigningKey(privateKey);
-		//converter.setVerifierKey(publicKey);
 		return converter;
 	}
 	
@@ -75,8 +74,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		.secret(CLIENT_SECRET)
 		.authorizedGrantTypes(GRANT_TYPE_PASSWORD, AUTHORIZATION_CODE, REFRESH_TOKEN, IMPLICIT )
 		.scopes(SCOPE_READ, SCOPE_WRITE, TRUST)
-		.accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS).
-		refreshTokenValiditySeconds(FREFRESH_TOKEN_VALIDITY_SECONDS);
+		.accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS)
+		.refreshTokenValiditySeconds(FREFRESH_TOKEN_VALIDITY_SECONDS);
 	}
 	
 }
